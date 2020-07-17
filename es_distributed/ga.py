@@ -133,16 +133,25 @@ def run_master(master_redis_cfg, log_dir, exp):
                 num_results_skipped, 100. * frac_results_skipped))
 
         # Assemble results + elite
+        print("pop")
+        print(population)
+        print("num_elites")
+        print(num_elites)
         noise_inds_n = list(population[:num_elites])
         returns_n2 = list(population_score[:num_elites])
+        print(returns_n2)
+        print(noise_inds_n)
         for r in curr_task_results:
             noise_inds_n.extend(r.noise_inds_n)
             returns_n2.extend(r.returns_n2)
+        print(returns_n2)
         noise_inds_n = np.array(noise_inds_n)
         returns_n2 = np.array(returns_n2)
-        lengths_n2 = np.array([r.lengths_n2 for r in curr_task_results])
+        lengths_n2 = np.concatenate([r.lengths_n2 for r in curr_task_results])
         # Process returns
-        idx = np.argpartition(returns_n2, (-population_size, -1))[-1:-population_size-1:-1]
+
+        # idx = np.argpartition(returns_n2, (-population_size, -1))[-1:-population_size-1:-1]
+        idx=np.argsort(returns_n2)[::-1][:population_size]
         population = noise_inds_n[idx]
         population_score = returns_n2[idx]
         assert len(population) == population_size
@@ -201,8 +210,8 @@ def run_master(master_redis_cfg, log_dir, exp):
                 curr_task_id,
                 np.nan if not eval_rets else int(np.mean(eval_rets))
             )
-            assert not osp.exists(filename)
-            policy.save(filename)
+            # assert not osp.exists(filename)
+            policy.save("GA_snapshot/"+filename)
             tlogger.log('Saved snapshot {}'.format(filename))
 
 
@@ -227,7 +236,7 @@ def run_worker(master_redis_cfg, relay_redis_cfg, noise, *, min_task_runtime=.2)
         if rs.rand() < config.eval_prob:
             # Evaluation: noiseless weights and noiseless actions
             policy.set_trainable_flat(task_data.params)
-            eval_rews, eval_length = policy.rollout(env)  # eval rollouts don't obey task_data.timestep_limit
+            eval_rews, eval_length,_ = policy.rollout(env)  # eval rollouts don't obey task_data.timestep_limit
             eval_return = eval_rews.sum()
             logger.info('Eval result: task={} return={:.3f} length={}'.format(task_id, eval_return, eval_length))
             worker.push_result(task_id, Result(

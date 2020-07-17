@@ -10,16 +10,13 @@
     "return_proc_mode": "centered_rank",
     "episode_cutoff_mode": 5
   },
-  "env_id": "FrostbiteNoFrameskip-v4",
-  "optimizer": {
-    "args": {
-      "stepsize": 0.01
-    },
-    "type": "adam"
-  },
+  "population_size": 5,
+  "num_elites": 1,
+  "env_id": "SpaceInvaders-v0",
   "policy": {
-    "args" : {},
-    "type": "ESAtariPolicy"
+    "args" : {
+      "nonlin_type": "relu"
+    },
+    "type": "GAAtariPolicy"
   }
 }
-

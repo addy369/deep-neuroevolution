@@ -3,7 +3,7 @@ FROM python:3.6-stretch
 # Install dependencies: tmux, wget, and redis
 RUN apt-get update && \
     apt-get install -y tmux wget cmake && \
-    wget http://download.redis.io/redis-stable.tar.gz && \
+    wget https://download.redis.io/redis-stable.tar.gz && \
     tar xvzf redis-stable.tar.gz && \
     cd redis-stable && \
     make && \

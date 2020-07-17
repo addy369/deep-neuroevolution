@@ -511,4 +511,3 @@ class GAAtariPolicy(Policy):
         if save_obs:
             return rews, t, np.array(obs), np.array(novelty_vector)
         return rews, t, np.array(novelty_vector)
-

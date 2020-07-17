@@ -211,7 +211,7 @@ def wrap_deepmind(env, episode_life=False, skip=4, stack_frames=4, noop_max=30, 
     if noops:
         env.override_num_noops = noops
     if skip > 1:
-        assert 'NoFrameskip' in env.spec.id  # required for DeepMind-style skip
+        # assert 'NoFrameskip' in env.spec.id  # required for DeepMind-style skip
         env = MaxAndSkipEnv(env, skip=4)
     if 'FIRE' in env.unwrapped.get_action_meanings():
         env = FireResetEnv(env)
