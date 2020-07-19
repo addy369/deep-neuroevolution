@@ -217,6 +217,8 @@ def run_master(master_redis_cfg, log_dir, exp):
                 np.nan if not eval_rets else int(np.mean(eval_rets))
             )
             # assert not osp.exists(filename)
+            if exp['env_id']=="SpaceInvaders-v0":
+                policy.save("GA_snapshot/SpaceInvaders/"+filename)
             policy.save("GA_snapshot/"+filename)
             tlogger.log('Saved snapshot {}'.format(filename))
 
