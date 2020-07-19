@@ -11,7 +11,7 @@ def main(env_id, policy_file, record, stochastic, extra_kwargs):
     import gym
     from gym import wrappers
     import tensorflow as tf
-    from es_distributed.policies import MujocoPolicy, ESAtariPolicy
+    from es_distributed.policies import MujocoPolicy, ESAtariPolicy,GAAtariPolicy
     from es_distributed.atari_wrappers import ScaledFloatFrame, wrap_deepmind
     from es_distributed.es import get_ref_batch
     import numpy as np
@@ -32,11 +32,11 @@ def main(env_id, policy_file, record, stochastic, extra_kwargs):
 
     with tf.Session():
         if is_atari_policy:
-            pi = ESAtariPolicy.Load(policy_file, extra_kwargs=extra_kwargs)
-            pi.set_ref_batch(get_ref_batch(env, batch_size=128))
+            pi = GAAtariPolicy.Load(policy_file, extra_kwargs=extra_kwargs)
+            # pi.set_ref_batch(get_ref_batch(env, batch_size=128))
         else:
             pi = MujocoPolicy.Load(policy_file, extra_kwargs=extra_kwargs)
-            
+
         while True:
             if is_atari_policy:
                 rews, t, novelty_vector = pi.rollout(env, render=True, random_stream=np.random if stochastic else None)

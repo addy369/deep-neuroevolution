@@ -14,6 +14,10 @@ def setup(exp, single_threaded):
     if exp['env_id'].endswith('NoFrameskip-v4'):
         from .atari_wrappers import wrap_deepmind
         env = wrap_deepmind(env)
+    if exp['env_id']=="SpaceInvaders-v0":
+        from .atari_wrappers import wrap_deepmind
+        env = wrap_deepmind(env)
+
     sess = make_session(single_threaded=single_threaded)
     policy = getattr(policies, exp['policy']['type'])(env.observation_space, env.action_space, **exp['policy']['args'])
     tf_util.initialize()
@@ -133,10 +137,8 @@ def run_master(master_redis_cfg, log_dir, exp):
                 num_results_skipped, 100. * frac_results_skipped))
 
         # Assemble results + elite
-        print("pop")
-        print(population)
-        print("num_elites")
-        print(num_elites)
+
+
         noise_inds_n = list(population[:num_elites])
         returns_n2 = list(population_score[:num_elites])
         print(returns_n2)
@@ -161,10 +163,14 @@ def run_master(master_redis_cfg, log_dir, exp):
         policy.set_trainable_flat(noise.get(population[0][0], policy.num_params))
         policy.reinitialize()
         v = policy.get_trainable_flat()
-
+        print("check")
+        print(len(v))
         for seed in population[0][1:]:
+            print(len(noise.get(seed,policy.num_params)))
             v += config.noise_stdev * noise.get(seed, policy.num_params)
         policy.set_trainable_flat(v)
+
+
 
         # Update number of steps to take
         if adaptive_tslimit and (lengths_n2 == tslimit).mean() >= incr_tslimit_threshold:
