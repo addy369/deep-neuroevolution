@@ -12,7 +12,7 @@
   },
   "population_size": 10,
   "num_elites": 1,
-  "env_id": "SpaceInvaders-v0",
+  "env_id": "MsPacman-v0",
   "policy": {
     "args" : {
       "nonlin_type": "relu"

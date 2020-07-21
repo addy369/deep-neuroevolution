@@ -16,8 +16,8 @@ def main(env_id, policy_file, record, stochastic, extra_kwargs):
     from es_distributed.es import get_ref_batch
     import numpy as np
 
-    is_atari_policy = "NoFrameskip" in env_id
-
+    is_atari_policy = "NoFrameskip" or "Space" or "MsPacman" in env_id
+    
     env = gym.make(env_id)
     if is_atari_policy:
         env = wrap_deepmind(env)

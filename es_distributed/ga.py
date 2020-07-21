@@ -17,6 +17,10 @@ def setup(exp, single_threaded):
     if exp['env_id']=="SpaceInvaders-v0":
         from .atari_wrappers import wrap_deepmind
         env = wrap_deepmind(env)
+    if exp['env_id']=="MsPacman-v0":
+        from .atari_wrappers import wrap_deepmind
+        env = wrap_deepmind(env)
+
 
     sess = make_session(single_threaded=single_threaded)
     policy = getattr(policies, exp['policy']['type'])(env.observation_space, env.action_space, **exp['policy']['args'])
@@ -154,6 +158,8 @@ def run_master(master_redis_cfg, log_dir, exp):
 
         # idx = np.argpartition(returns_n2, (-population_size, -1))[-1:-population_size-1:-1]
         idx=np.argsort(returns_n2)[::-1][:population_size]
+        print('idx')
+        print(idx)
         population = noise_inds_n[idx]
         population_score = returns_n2[idx]
         assert len(population) == population_size
@@ -219,7 +225,10 @@ def run_master(master_redis_cfg, log_dir, exp):
             # assert not osp.exists(filename)
             if exp['env_id']=="SpaceInvaders-v0":
                 policy.save("GA_snapshot/SpaceInvaders/"+filename)
-            policy.save("GA_snapshot/"+filename)
+            elif exp['env_id']=="MsPacman-v0":
+                policy.save("GA_snapshot/MsPacman/"+filename)
+            else:
+                policy.save("GA_snapshot/"+filename)
             tlogger.log('Saved snapshot {}'.format(filename))
 
 
